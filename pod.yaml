@@ -3,9 +3,19 @@ kind: Pod
 metadata:
   name: mwmp
 spec:
+  volumes:
+  - name: mwmp-mysql-volume
+    hostPath:
+      path: mwmp-mysql-volume
+  - name: mwmp-wordpress-volume
+    hostPath:
+      path: mwmp-wordpress-volume
   containers:
   - image: docker.io/library/mysql:8
     name: mysql
+    volumeMounts:
+    - name: mwmp-mysql-volume
+      mountPath: /var/lib/mysql
     env:
     - name: MYSQL_DATABASE
       value: wordpress
@@ -13,6 +23,9 @@ spec:
       value: root
   - image: docker.io/library/wordpress:5
     name: wordpress
+    volumeMounts:
+    - name: mwmp-wordpress-volume
+      mountPath: /var/www/html
     env:
     - name: WORDPRESS_DB_HOST
       value: 0.0.0.0
